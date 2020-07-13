@@ -58,7 +58,7 @@ google-auth==1.5.0
 google-auth-httplib2==0.0.3
 graphviz==0.14
 grpcio==1.16.0
-httplib2==0.11.3
+httplib2==0.18.0
 hyperlink==19.0.0
 idna @ file:///tmp/build/80754af9/idna_1593446292537/work
 importlib-metadata @ file:///opt/concourse/worker/volumes/live/c15100a6-3aca-4bde-70bd-9279a634b55b/volume/importlib-metadata_1593446478014/work
