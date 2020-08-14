@@ -67,7 +67,7 @@ def create_image():
 			'caption': image.caption,
 			'location': image.location
 		}
-		return jsonify({'image': 'hi'}), 201
+		return jsonify({'image': displayed_image}), 201
 	except:
 		abort(500)
 
