@@ -10,8 +10,6 @@ db = SQLAlchemy(app)
 
 import models
 
-images = []
-
 @app.errorhandler(404)
 def not_found(error):
 	return make_response(jsonify({'error': 'Not found'}), 404)
@@ -107,12 +105,12 @@ def update_image(image_id):
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['DELETE'])
 def delete_image(image_id):
-	result = False
 	try:
 		db.session.query(models.Image).filter_by(id=image_id).delete()
 		db.session.commit()
-		result = True
-	return jsonify({'result': result})
+	except:
+		abort(500)
+	return jsonify({'result': True})
 
 if __name__ == '__main__':
 	app.run(debug=True)
