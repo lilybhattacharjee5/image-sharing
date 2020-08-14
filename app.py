@@ -21,16 +21,16 @@ def get_images():
 	# return jsonify({'images': images})
 	displayed_images = []
 	# try:
-		images = db.session.query(models.Image).all()
-		for image in images:
-			displayed_images.append({
-				id: image.id,
-				url: image.url,
-				title: image.title,
-				caption: image.caption,
-				location: image.location
-			})
-		return jsonify({'images': displayed_images})
+	images = db.session.query(models.Image).all()
+	for image in images:
+		displayed_images.append({
+			id: image.id,
+			url: image.url,
+			title: image.title,
+			caption: image.caption,
+			location: image.location
+		})
+	return jsonify({'images': displayed_images})
 	# except:
 	# 	abort(500)
 
