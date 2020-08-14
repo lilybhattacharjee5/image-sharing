@@ -36,11 +36,11 @@ def get_image(image_id):
 	try:
 		image = db.session.query(models.Image).get(image_id)
 		displayed_image = {
-			id: image.id,
-			url: image.url,
-			title: image.title,
-			caption: image.caption,
-			location: image.location
+			"id": image.id,
+			"url": image.url,
+			"title": image.title,
+			"caption": image.caption,
+			"location": image.location
 		}
 		return jsonify({'image': displayed_image})
 	except:
