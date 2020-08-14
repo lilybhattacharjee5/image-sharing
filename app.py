@@ -5,6 +5,10 @@ import os
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+from models import Image
 
 images = []
 
@@ -14,28 +18,73 @@ def not_found(error):
 
 @app.route('/image_sharing/api/v1.0/images', methods=['GET'])
 def get_images():
-	return jsonify({'images': images})
+	# return jsonify({'images': images})
+	displayed_images = []
+	try:
+		images = db.session.query(Image).all()
+		for image in images:
+			displayed_images.append({
+				id: image.id,
+				url: image.url,
+				title: image.title,
+				caption: image.caption,
+				location: image.location
+			})
+		return jsonify({'images': displayed_images})
+	except:
+		abort(500)
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['GET'])
 def get_image(image_id):
-	image = [image for image in images if image['id'] == image_id]
-	if len(image) == 0:
-		abort(404)
-	return jsonify({'image': image[0]})
+	try:
+		image = db.session.query(Image).get(image_id)
+		displayed_image = {
+			id: image.id,
+			url: image.url,
+			title: image.title,
+			caption: image.caption,
+			location: image.location
+		}
+		return jsonify({'image': displayed_image})
+	except:
+		abort(500)
+	# image = [image for image in images if image['id'] == image_id]
+	# if len(image) == 0:
+	# 	abort(404)
+	# return jsonify({'image': image[0]})
 
 @app.route('/image_sharing/api/v1.0/images', methods=['POST'])
 def create_image():
 	if not request.json or not 'url' in request.json:
 		abort(400)
-	image = {
-		'id': images[-1]['id'] + 1,
-		'url': request.json['url'],
-		'title': request.json['title'],
-		'caption': request.json.get('caption', ""),
-		'location': request.json['location']
-	}
-	images.append(image)
-	return jsonify({'image': image}), 201
+	# image = {
+	# 	'id': images[-1]['id'] + 1,
+	# 	'url': request.json['url'],
+	# 	'title': request.json['title'],
+	# 	'caption': request.json.get('caption', ""),
+	# 	'location': request.json['location']
+	# }
+	try:
+		image = Image(
+			url = request.json['url'],
+			title = request.json['title'],
+			caption = request.json['caption'],
+			location = request.json['location']
+		)
+		db.session.add(image)
+		db.session.commit()
+
+		displayed_image = {
+			'id': image.id,
+			'url': image.url,
+			'title': image.title,
+			'caption': image.caption,
+			'location': image.location
+		}
+		return jsonify({'image': displayed_image}), 201
+	except:
+		abort(500)
+	# images.append(image)
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['PUT'])
 def update_image(image_id):
