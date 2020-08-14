@@ -20,6 +20,7 @@ def get_images():
 	try:
 		images = db.session.query(models.Image).all()
 		for image in images:
+			print(image)
 			displayed_images.append({
 				id: image.id,
 				url: image.url,
