@@ -60,14 +60,14 @@ def create_image():
 	db.session.add(image)
 	db.session.commit()
 
-	displayed_image = {
-		'id': image.id,
-		'url': image.url,
-		'title': image.title,
-		'caption': image.caption,
-		'location': image.location
-	}
-	return jsonify({'image': displayed_image}), 201
+	# displayed_image = {
+	# 	'id': image.id,
+	# 	'url': image.url,
+	# 	'title': image.title,
+	# 	'caption': image.caption,
+	# 	'location': image.location
+	# }
+	return jsonify({'image': 'hi'}), 201
 	# except:
 	# 	abort(500)
 
