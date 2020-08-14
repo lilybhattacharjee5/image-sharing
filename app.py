@@ -50,26 +50,26 @@ def get_image(image_id):
 def create_image():
 	if not request.json or not 'url' in request.json:
 		abort(400)
-	# try:
-	image = models.Image(
-		url = request.json['url'],
-		title = request.json['title'],
-		caption = request.json['caption'],
-		location = request.json['location']
-	)
-	db.session.add(image)
-	db.session.commit()
+	try:
+		image = models.Image(
+			url = "" if 'url' not in request.json else request.json['url'],
+			title = "" if 'title' not in request.json else request.json['title'],
+			caption = "" if 'caption' not in request.json else request.json['caption'],
+			location = "" if 'location' not in request.json else request.json['location']
+		)
+		db.session.add(image)
+		db.session.commit()
 
-	# displayed_image = {
-	# 	'id': image.id,
-	# 	'url': image.url,
-	# 	'title': image.title,
-	# 	'caption': image.caption,
-	# 	'location': image.location
-	# }
-	return jsonify({'image': 'hi'}), 201
-	# except:
-	# 	abort(500)
+		displayed_image = {
+			'id': image.id,
+			'url': image.url,
+			'title': image.title,
+			'caption': image.caption,
+			'location': image.location
+		}
+		return jsonify({'image': 'hi'}), 201
+	except:
+		abort(500)
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['PUT'])
 def update_image(image_id):
