@@ -8,7 +8,7 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from models import Image
+import models
 
 images = []
 
@@ -21,7 +21,7 @@ def get_images():
 	# return jsonify({'images': images})
 	displayed_images = []
 	try:
-		images = db.session.query(Image).all()
+		images = db.session.query(models.Image).all()
 		for image in images:
 			displayed_images.append({
 				id: image.id,
@@ -37,7 +37,7 @@ def get_images():
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['GET'])
 def get_image(image_id):
 	try:
-		image = db.session.query(Image).get(image_id)
+		image = db.session.query(models.Image).get(image_id)
 		displayed_image = {
 			id: image.id,
 			url: image.url,
@@ -65,7 +65,7 @@ def create_image():
 	# 	'location': request.json['location']
 	# }
 	try:
-		image = Image(
+		image = models.Image(
 			url = request.json['url'],
 			title = request.json['title'],
 			caption = request.json['caption'],

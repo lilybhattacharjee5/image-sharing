@@ -1,14 +1,14 @@
-from app import db
+import app
 from sqlalchemy.dialects.postgresql import JSON
 
-class Image(db.Model):
+class Image(app.db.Model):
 	__tablename__ = 'images'
 
-	id = db.Column(db.Integer, primary_key = True)
-	url = db.Column(db.String())
-	title = db.Column(db.String())
-	caption = db.Column(db.String())
-	location = db.Column(db.String())
+	id = app.db.Column(app.db.Integer, primary_key = True)
+	url = app.db.Column(app.db.String())
+	title = app.db.Column(app.db.String())
+	caption = app.db.Column(app.db.String())
+	location = app.db.Column(app.db.String())
 
 	def __init__(self, url, title, caption, location):
 		self.url = url
