@@ -20,13 +20,12 @@ def get_images():
 	try:
 		images = db.session.query(models.Image).all()
 		for image in images:
-			print(image)
 			displayed_images.append({
-				id: image.id,
-				url: image.url,
-				title: image.title,
-				caption: image.caption,
-				location: image.location
+				"id": image.id,
+				"url": image.url,
+				"title": image.title,
+				"caption": image.caption,
+				"location": image.location
 			})
 		return jsonify({'images': displayed_images})
 	except:
@@ -94,11 +93,11 @@ def update_image(image_id):
 		})
 		db.session.commit()
 		displayed_image = {
-			id: image.id,
-			url: image.url,
-			title: image.title,
-			caption: image.caption,
-			location: image.location
+			"id": image.id,
+			"url": image.url,
+			"title": image.title,
+			"caption": image.caption,
+			"location": image.location
 		}
 		return jsonify({'image': displayed_image})
 	except:
