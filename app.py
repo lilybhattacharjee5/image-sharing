@@ -18,23 +18,20 @@ def not_found(error):
 
 @app.route('/image_sharing/api/v1.0/images', methods=['GET'])
 def get_images():
-	# return jsonify({'images': images})
 	displayed_images = []
-	# try:
-	images = db.session.query(models.Image).all()
-	print(images)
-	for image in images:
-		displayed_images.append({
-			id: image.id,
-			url: image.url,
-			title: image.title,
-			caption: image.caption,
-			location: image.location
-		})
-	print(displayed_images)
-	return jsonify({'images': displayed_images})
-	# except:
-	# 	abort(500)
+	try:
+		images = db.session.query(models.Image).all()
+		for image in images:
+			displayed_images.append({
+				id: image.id,
+				url: image.url,
+				title: image.title,
+				caption: image.caption,
+				location: image.location
+			})
+		return jsonify({'images': displayed_images})
+	except:
+		abort(500)
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['GET'])
 def get_image(image_id):
@@ -50,22 +47,11 @@ def get_image(image_id):
 		return jsonify({'image': displayed_image})
 	except:
 		abort(500)
-	# image = [image for image in images if image['id'] == image_id]
-	# if len(image) == 0:
-	# 	abort(404)
-	# return jsonify({'image': image[0]})
 
 @app.route('/image_sharing/api/v1.0/images', methods=['POST'])
 def create_image():
 	if not request.json or not 'url' in request.json:
 		abort(400)
-	# image = {
-	# 	'id': images[-1]['id'] + 1,
-	# 	'url': request.json['url'],
-	# 	'title': request.json['title'],
-	# 	'caption': request.json.get('caption', ""),
-	# 	'location': request.json['location']
-	# }
 	try:
 		image = models.Image(
 			url = request.json['url'],
@@ -86,13 +72,9 @@ def create_image():
 		return jsonify({'image': displayed_image}), 201
 	except:
 		abort(500)
-	# images.append(image)
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['PUT'])
 def update_image(image_id):
-	image = [image for image in images if image['id'] == image_id]
-	if len(image) == 0:
-		abort(404)
 	if not request.json:
 		abort(400)
 	if 'url' in request.json and type(request.json['url']) != unicode:
@@ -103,19 +85,34 @@ def update_image(image_id):
 		abort(400)
 	if 'location' in request.json and type(request.json['location']) != unicode:
 		abort(400)
-	image[0]['url'] = request.json.get('url', image[0]['url'])
-	image[0]['title'] = request.json.get('title', image[0]['title'])
-	image[0]['caption'] = request.json.get('caption', image[0]['caption'])
-	image[0]['location'] = request.json.get('location', image[0]['location'])
-	return jsonify({'image': image[0]})
+	try:
+		image = db.session.query(models.Image).get(image_id)
+		image.update({
+			'url': image.url if 'url' not in request.json else request.json['url'],
+			'title': image.title if 'title' not in request.json else request.json['title'],
+			'caption': image.caption if 'caption' not in request.json else request.json['caption'],
+			'location': image.location if 'location' not in request.json else request.json['location']
+		})
+		db.session.commit()
+		displayed_image = {
+			id: image.id,
+			url: image.url,
+			title: image.title,
+			caption: image.caption,
+			location: image.location
+		}
+		return jsonify({'image': displayed_image})
+	except:
+		abort(500)
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['DELETE'])
 def delete_image(image_id):
-	image = [image for image in images if image['id'] == image_id]
-	if len(image) == 0:
-		abort(404)
-	images.remove(image[0])
-	return jsonify({'result': True})
+	result = False
+	try:
+		db.session.query(models.Image).filter_by(id=image_id).delete()
+		db.session.commit()
+		result = True
+	return jsonify({'result': result})
 
 if __name__ == '__main__':
 	app.run(debug=True)
