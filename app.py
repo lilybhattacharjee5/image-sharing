@@ -22,6 +22,7 @@ def get_images():
 	displayed_images = []
 	# try:
 	images = db.session.query(models.Image).all()
+	print(images)
 	for image in images:
 		displayed_images.append({
 			id: image.id,
@@ -30,6 +31,7 @@ def get_images():
 			caption: image.caption,
 			location: image.location
 		})
+	print(displayed_images)
 	return jsonify({'images': displayed_images})
 	# except:
 	# 	abort(500)
