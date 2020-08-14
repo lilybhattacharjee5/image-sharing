@@ -20,7 +20,7 @@ def not_found(error):
 def get_images():
 	# return jsonify({'images': images})
 	displayed_images = []
-	try:
+	# try:
 		images = db.session.query(models.Image).all()
 		for image in images:
 			displayed_images.append({
@@ -31,8 +31,8 @@ def get_images():
 				location: image.location
 			})
 		return jsonify({'images': displayed_images})
-	except:
-		abort(500)
+	# except:
+	# 	abort(500)
 
 @app.route('/image_sharing/api/v1.0/images/<int:image_id>', methods=['GET'])
 def get_image(image_id):
